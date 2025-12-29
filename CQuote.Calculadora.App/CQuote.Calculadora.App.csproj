@@ -7,8 +7,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\CQuote.Calculadora.Core\CQuote.Calculadora.Core\CQuote.Calculadora.Core.csproj" />
-  </ItemGroup>
-
 </Project>
