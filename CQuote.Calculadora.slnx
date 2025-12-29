@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/CQuote.Calculadora.App/">
+    <Project Path="CQuote.Calculadora.App/CQuote.Calculadora.App/CQuote.Calculadora.App.csproj" />
+  </Folder>
+  <Folder Name="/CQuote.Calculadora.Core/">
+    <Project Path="CQuote.Calculadora.Core/CQuote.Calculadora.Core/CQuote.Calculadora.Core.csproj" />
+  </Folder>
+</Solution>
