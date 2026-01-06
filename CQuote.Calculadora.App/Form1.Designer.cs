@@ -32,12 +32,16 @@ partial class Form1
         Trview1 = new TreeView();
         BtnPelicula = new Button();
         BtnSeparador = new Button();
-        button4 = new Button();
+        BtnCalcular = new Button();
+        BtnMon = new Button();
+        BtnLam = new Button();
+        BtnIns = new Button();
+        BtnBorrar = new Button();
         SuspendLayout();
         // 
         // BtnCristal
         // 
-        BtnCristal.Location = new Point(349, 37);
+        BtnCristal.Location = new Point(363, 157);
         BtnCristal.Name = "BtnCristal";
         BtnCristal.Size = new Size(94, 29);
         BtnCristal.TabIndex = 0;
@@ -46,14 +50,14 @@ partial class Form1
         // 
         // Trview1
         // 
-        Trview1.Location = new Point(23, 37);
+        Trview1.Location = new Point(-7, 157);
         Trview1.Name = "Trview1";
-        Trview1.Size = new Size(304, 510);
+        Trview1.Size = new Size(304, 394);
         Trview1.TabIndex = 1;
         // 
         // BtnPelicula
         // 
-        BtnPelicula.Location = new Point(349, 85);
+        BtnPelicula.Location = new Point(363, 205);
         BtnPelicula.Name = "BtnPelicula";
         BtnPelicula.Size = new Size(94, 29);
         BtnPelicula.TabIndex = 0;
@@ -62,21 +66,59 @@ partial class Form1
         // 
         // BtnSeparador
         // 
-        BtnSeparador.Location = new Point(349, 144);
+        BtnSeparador.Location = new Point(363, 264);
         BtnSeparador.Name = "BtnSeparador";
         BtnSeparador.Size = new Size(94, 29);
         BtnSeparador.TabIndex = 0;
         BtnSeparador.Text = "button1";
         BtnSeparador.UseVisualStyleBackColor = true;
         // 
-        // button4
+        // BtnCalcular
         // 
-        button4.Location = new Point(623, 407);
-        button4.Name = "button4";
-        button4.Size = new Size(94, 29);
-        button4.TabIndex = 0;
-        button4.Text = "button1";
-        button4.UseVisualStyleBackColor = true;
+        BtnCalcular.Location = new Point(644, 479);
+        BtnCalcular.Name = "BtnCalcular";
+        BtnCalcular.Size = new Size(94, 29);
+        BtnCalcular.TabIndex = 0;
+        BtnCalcular.Text = "Calcular";
+        BtnCalcular.UseVisualStyleBackColor = true;
+        BtnCalcular.Click += button4_Click_1;
+        // 
+        // BtnMon
+        // 
+        BtnMon.Location = new Point(535, 157);
+        BtnMon.Name = "BtnMon";
+        BtnMon.Size = new Size(94, 29);
+        BtnMon.TabIndex = 0;
+        BtnMon.Text = "button1";
+        BtnMon.UseVisualStyleBackColor = true;
+        // 
+        // BtnLam
+        // 
+        BtnLam.Location = new Point(535, 205);
+        BtnLam.Name = "BtnLam";
+        BtnLam.Size = new Size(94, 29);
+        BtnLam.TabIndex = 0;
+        BtnLam.Text = "button1";
+        BtnLam.UseVisualStyleBackColor = true;
+        // 
+        // BtnIns
+        // 
+        BtnIns.Location = new Point(535, 254);
+        BtnIns.Name = "BtnIns";
+        BtnIns.Size = new Size(94, 29);
+        BtnIns.TabIndex = 0;
+        BtnIns.Text = "button1";
+        BtnIns.UseVisualStyleBackColor = true;
+        // 
+        // BtnBorrar
+        // 
+        BtnBorrar.Location = new Point(644, 531);
+        BtnBorrar.Name = "BtnBorrar";
+        BtnBorrar.Size = new Size(94, 29);
+        BtnBorrar.TabIndex = 0;
+        BtnBorrar.Text = "Borrar";
+        BtnBorrar.UseVisualStyleBackColor = true;
+        BtnBorrar.Click += button4_Click_1;
         // 
         // Form1
         // 
@@ -86,11 +128,15 @@ partial class Form1
         Controls.Add(Trview1);
         Controls.Add(BtnSeparador);
         Controls.Add(BtnPelicula);
-        Controls.Add(button4);
+        Controls.Add(BtnBorrar);
+        Controls.Add(BtnCalcular);
+        Controls.Add(BtnIns);
+        Controls.Add(BtnLam);
+        Controls.Add(BtnMon);
         Controls.Add(BtnCristal);
         Name = "Form1";
         Text = "Form1";
-        // Load += Form1_Load; // Comentado para evitar error CS0103
+        Load += Form1_Load;
         ResumeLayout(false);
     }
 
@@ -100,5 +146,9 @@ partial class Form1
     private TreeView Trview1;
     private Button BtnPelicula;
     private Button BtnSeparador;
-    private Button button4;
+    private Button BtnCalcular;
+    private Button BtnMon;
+    private Button BtnLam;
+    private Button BtnIns;
+    private Button BtnBorrar;
 }
