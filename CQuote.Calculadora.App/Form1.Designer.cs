@@ -28,11 +28,77 @@ partial class Form1
     /// </summary>
     private void InitializeComponent()
     {
-        components = new System.ComponentModel.Container();
+        BtnCristal = new Button();
+        Trview1 = new TreeView();
+        BtnPelicula = new Button();
+        BtnSeparador = new Button();
+        button4 = new Button();
+        SuspendLayout();
+        // 
+        // BtnCristal
+        // 
+        BtnCristal.Location = new Point(349, 37);
+        BtnCristal.Name = "BtnCristal";
+        BtnCristal.Size = new Size(94, 29);
+        BtnCristal.TabIndex = 0;
+        BtnCristal.Text = "button1";
+        BtnCristal.UseVisualStyleBackColor = true;
+        // 
+        // Trview1
+        // 
+        Trview1.Location = new Point(23, 37);
+        Trview1.Name = "Trview1";
+        Trview1.Size = new Size(304, 510);
+        Trview1.TabIndex = 1;
+        // 
+        // BtnPelicula
+        // 
+        BtnPelicula.Location = new Point(349, 85);
+        BtnPelicula.Name = "BtnPelicula";
+        BtnPelicula.Size = new Size(94, 29);
+        BtnPelicula.TabIndex = 0;
+        BtnPelicula.Text = "button1";
+        BtnPelicula.UseVisualStyleBackColor = true;
+        // 
+        // BtnSeparador
+        // 
+        BtnSeparador.Location = new Point(349, 144);
+        BtnSeparador.Name = "BtnSeparador";
+        BtnSeparador.Size = new Size(94, 29);
+        BtnSeparador.TabIndex = 0;
+        BtnSeparador.Text = "button1";
+        BtnSeparador.UseVisualStyleBackColor = true;
+        // 
+        // button4
+        // 
+        button4.Location = new Point(623, 407);
+        button4.Name = "button4";
+        button4.Size = new Size(94, 29);
+        button4.TabIndex = 0;
+        button4.Text = "button1";
+        button4.UseVisualStyleBackColor = true;
+        // 
+        // Form1
+        // 
+        AutoScaleDimensions = new SizeF(8F, 20F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(800, 450);
+        ClientSize = new Size(810, 630);
+        Controls.Add(Trview1);
+        Controls.Add(BtnSeparador);
+        Controls.Add(BtnPelicula);
+        Controls.Add(button4);
+        Controls.Add(BtnCristal);
+        Name = "Form1";
         Text = "Form1";
+        // Load += Form1_Load; // Comentado para evitar error CS0103
+        ResumeLayout(false);
     }
 
     #endregion
+
+    private Button BtnCristal;
+    private TreeView Trview1;
+    private Button BtnPelicula;
+    private Button BtnSeparador;
+    private Button button4;
 }
