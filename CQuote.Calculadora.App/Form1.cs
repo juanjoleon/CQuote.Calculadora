@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using CQuote.Calculadora.Core;
 
 namespace CQuote.Calculadora.App
 {
@@ -9,25 +10,38 @@ namespace CQuote.Calculadora.App
         {
             InitializeComponent();
 
-            var calc = new CQuote.Calculadora.Core.Calculadora();
+            var calc = new CalculadoraPrecios();
 
-            string detalle = calc.CalcularCristalCompleto(
-                basePrecio: 100,
-                factor: 1.15m,
-                tipoCorte: 12,
-                maquinados: 30,
-                otros: 15,
-                merma: 5,
-                desperdicio: 10,
-                margen: 0.20m,   // 20% margen
-                barrenoM2: 8,
-                impresionM2: 20,
-                pelicula: 25,
-                separador: 40,
-                areaM2: 2.5m     // ejemplo: cristal de 2.5 m²
-            );
+            var cristal = calc.CalcularCristal(
+                costoProveedor: 100, costoImportacion: 20,
+                factor1: 0.95m, factor2: 0.90m, factor3: 1.02m,
+                merma: 1.01m, factorCorte: 1.0m, costoProcesoCorte: 15,
+                costoProcesoTermico: 10, costoImpresion: 5, costoCantos: 18,
+                costoBarrenos: 2, costoAvellanados: 3, costoResaques: 4,
+                desperdicio: 0.15m, cantidad: 2, margen: 0.25m,
+                areaTotal: 2.4m, perimetroTotal: 6.4m,
+                barrenosTotales: 2, avellanadosTotales: 1, resaquesTotales: 1);
 
-            MessageBox.Show(detalle, "Detalle del cálculo completo del ensamble");
+            var pelicula = calc.CalcularPelicula(
+                costoProveedor: 50, costoImportacion: 10,
+                factor1: 0.95m, factor2: 0.90m, factor3: 1.02m,
+                desperdicio: 0.10m, margen: 0.20m);
+
+            var separador = calc.CalcularSeparador(
+                costoProveedor: 30, costoImportacion: 5,
+                factor1: 0.95m, factor2: 0.90m, factor3: 1.02m,
+                margen: 0.15m, areaTotal: 2.4m, perimetroTotal: 6.4m);
+
+            var total = cristal.PrecioFinal + pelicula.PrecioFinal + separador.PrecioFinal;
+
+            string detalle =
+                cristal.Detalle + "\n\n" +
+                pelicula.Detalle + "\n\n" +
+                separador.Detalle + "\n\n" +
+                "--- TOTAL ENSAMBLE ---\n" +
+                $"Precio final ensamble: {total}";
+
+            MessageBox.Show(detalle, "Detalle de cálculos");
         }
     }
 }
