@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CQuote.Calculadora.App/CQuote.Calculadora.App.csproj" />
+  <Project Path="CQuote.Calculadora.Core/CQuote.Calculadora.Core.csproj" />
+</Solution>

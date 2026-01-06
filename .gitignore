@@ -1,0 +1,18 @@
+# Visual Studio y .NET
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.vsidx
+*.mpack
+
+# Copilot y snapshots locales
+.vs/CopilotSnapshots/
+.vs/CQuote.Calculadora/CopilotIndices/
+.vs/CQuote.Calculadora.slnx/copilot-chat/
+.vs/CQuote.Calculadora.slnx/v18/
+
+# Archivos de configuración local
+*.cache
+*.log
