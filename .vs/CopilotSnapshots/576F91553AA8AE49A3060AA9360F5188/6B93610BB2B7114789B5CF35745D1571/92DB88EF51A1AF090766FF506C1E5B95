@@ -1,0 +1,146 @@
+﻿using System.Diagnostics;
+using System.Windows.Forms;
+using CQuote.Calculadora.Core;
+
+namespace CQuote.Calculadora.App
+{
+    public partial class EnsambleForm : Form
+    {
+        private int _insuladoCount = 0;
+        private int _laminadoCount = 0;
+        private int _monoliticoCount = 0;
+
+        public EnsambleForm()
+        {
+            InitializeComponent();
+            BtnInsulado.Text = "Insulado";
+            BtnLaminado.Text = "Laminado";
+            BtnMonolitico.Text = "Monolítico";
+            BtnCristal.Text = "Cristal";
+            BtnPelicula.Text = "Película";
+            BtnCalcular.Text = "Calcular";
+
+            BtnInsulado.Click += BtnInsulado_Click;
+            BtnLaminado.Click += BtnLaminado_Click;
+            BtnMonolitico.Click += BtnMonolitico_Click;
+            BtnCristal.Click += BtnCristal_Click;
+            BtnPelicula.Click += BtnPelicula_Click;
+            BtnCalcular.Click += BtnCalcular_Click;
+        }
+
+        private void BtnInsulado_Click(object sender, System.EventArgs e)
+        {
+            string rootName = $"INS{_insuladoCount:00}";
+            _insuladoCount++;
+            var root = new TreeNode(rootName);
+            root.Nodes.Add("Cristal");
+            root.Nodes.Add("Separador");
+            root.Nodes.Add("Cristal");
+            Trv1.Nodes.Add(root);
+            root.Expand();
+        }
+
+        private void BtnLaminado_Click(object sender, System.EventArgs e)
+        {
+            if (Trv1.SelectedNode != null && Trv1.SelectedNode.Text == "Cristal")
+            {
+                ReplaceCristalWithLaminado();
+                return;
+            }
+            string rootName = $"LAM{_laminadoCount:00}";
+            _laminadoCount++;
+            var root = new TreeNode(rootName);
+            root.Nodes.Add("Cristal");
+            root.Nodes.Add("Película");
+            root.Nodes.Add("Cristal");
+            Trv1.Nodes.Add(root);
+            root.Expand();
+        }
+
+        private void BtnMonolitico_Click(object sender, System.EventArgs e)
+        {
+            string rootName = $"MON{_monoliticoCount:00}";
+            _monoliticoCount++;
+            var root = new TreeNode(rootName);
+            root.Nodes.Add("Cristal");
+            Trv1.Nodes.Add(root);
+            root.Expand();
+        }
+
+        private void BtnCristal_Click(object sender, System.EventArgs e)
+        {
+            InsertNodeAfterSelected("Cristal");
+        }
+
+        private void BtnPelicula_Click(object sender, System.EventArgs e)
+        {
+            InsertNodeAfterSelected("Película");
+        }
+
+        private void BtnCalcular_Click(object sender, System.EventArgs e)
+        {
+            // Ejecutar el cálculo del ensamble y mostrar el resultado en un MessageBox
+            var servicio = new CQuote.Calculadora.Core.EnsambleService();
+            var resultado = servicio.CalcularEnsamble();
+            MessageBox.Show(resultado.Detalle + "\n\n" +
+                $"Precio final ensamble: {resultado.PrecioFinal}\n" +
+                $"Costo total ensamble: {resultado.CostoTotal}",
+                "Resultado del Ensamble", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void InsertNodeAfterSelected(string nodeName)
+        {
+            if (Trv1.SelectedNode == null) return;
+            var parent = Trv1.SelectedNode.Parent;
+            int index = Trv1.SelectedNode.Index + 1;
+            var newNode = new TreeNode(nodeName);
+            if (parent == null)
+            {
+                Trv1.Nodes.Insert(index, newNode);
+            }
+            else
+            {
+                parent.Nodes.Insert(index, newNode);
+            }
+        }
+
+        protected override void OnLoad(System.EventArgs e)
+        {
+            base.OnLoad(e);
+            Trv1.AfterSelect += Trv1_AfterSelect;
+        }
+
+        private void Trv1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            // Aquí puedes agregar lógica si necesitas saber qué nodo está seleccionado
+        }
+
+        private void ReplaceCristalWithLaminado()
+        {
+            if (Trv1.SelectedNode == null) return;
+            var selected = Trv1.SelectedNode;
+            if (selected.Text == "Cristal")
+            {
+                string lamName = $"LAM{_laminadoCount:00}";
+                _laminadoCount++;
+                var lamNode = new TreeNode(lamName);
+                lamNode.Nodes.Add("Cristal");
+                lamNode.Nodes.Add("Película");
+                lamNode.Nodes.Add("Cristal");
+                var parent = selected.Parent;
+                int idx = selected.Index;
+                if (parent == null)
+                {
+                    Trv1.Nodes.RemoveAt(idx);
+                    Trv1.Nodes.Insert(idx, lamNode);
+                }
+                else
+                {
+                    parent.Nodes.RemoveAt(idx);
+                    parent.Nodes.Insert(idx, lamNode);
+                }
+                lamNode.Expand();
+            }
+        }
+    }
+}

@@ -1,0 +1,19 @@
+﻿using System;
+using CQuote.Calculadora.Core;
+
+namespace CQuote.Calculadora.Core
+{
+    public class EnsambleService
+    {
+        public ProductoResultado CalcularEnsamble()
+        {
+            // Simulación de cálculo de ensamble
+            return new ProductoResultado
+            {
+                PrecioFinal = 1000m,
+                Margen = 0.25m,
+                Detalle = "Cálculo de ensamble simulado."
+            };
+        }
+    }
+}
