@@ -6,9 +6,23 @@ namespace CQuote.Calculadora.App
 {
     public partial class Form1 : Form
     {
+        private ConfigCristalControl configCristalControl;
+        private ConfigSeparadorControl configSeparadorControl;
+        private ConfigPeliculaControl configPeliculaControl;
+
         public Form1()
         {
             InitializeComponent();
+
+            // Inicializar los UserControls
+            configCristalControl = new ConfigCristalControl { Dock = DockStyle.Fill, Visible = false };
+            configSeparadorControl = new ConfigSeparadorControl { Dock = DockStyle.Fill, Visible = false };
+            configPeliculaControl = new ConfigPeliculaControl { Dock = DockStyle.Fill, Visible = false };
+
+            // Agregarlos al Panel1
+            panel1.Controls.Add(configCristalControl);
+            panel1.Controls.Add(configSeparadorControl);
+            panel1.Controls.Add(configPeliculaControl);
 
             // Asignar eventos a los botones
             BtnCristal.Click += BtnCristal_Click;
@@ -19,13 +33,46 @@ namespace CQuote.Calculadora.App
             BtnIns.Click += BtnIns_Click;
             BtnCalcular.Click += button4_Click;
             BtnBorrar.Click += BtnBorrar_Click;
+
+            // Evento de selección de nodo
+            Trview1.AfterSelect += Trview1_AfterSelect;
+        }
+
+        private void Trview1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node.Tag is ConfigMaterial config)
+            {
+                // Ocultar todos
+                configCristalControl.Visible = false;
+                configSeparadorControl.Visible = false;
+                configPeliculaControl.Visible = false;
+
+                // Mostrar el que corresponda
+                switch (e.Node.Name)
+                {
+                    case "Cristal":
+                        configCristalControl.Visible = true;
+                        configCristalControl.LoadConfig(config);
+                        break;
+                    case "Separador":
+                        configSeparadorControl.Visible = true;
+                        configSeparadorControl.LoadConfig(config);
+                        break;
+                    case "Pelicula":
+                        configPeliculaControl.Visible = true;
+                        configPeliculaControl.LoadConfig(config);
+                        break;
+                }
+            }
         }
 
         // --- Botones para crear ensambles padres ---
         private void BtnMon_Click(object sender, EventArgs e)
         {
             var mon = new TreeNode("MON") { Name = "MON" };
-            mon.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal" });
+            var cristal = new TreeNode("Cristal") { Name = "Cristal" };
+            cristal.Tag = new ConfigMaterial { CostoProveedor = 100 };
+            mon.Nodes.Add(cristal);
             Trview1.Nodes.Add(mon);
             Trview1.ExpandAll();
         }
@@ -33,9 +80,15 @@ namespace CQuote.Calculadora.App
         private void BtnIns_Click(object sender, EventArgs e)
         {
             var ins = new TreeNode("INS") { Name = "INS" };
-            ins.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal" });
-            ins.Nodes.Add(new TreeNode("Separador") { Name = "Separador" });
-            ins.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal" });
+
+            var cristal1 = new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100 } };
+            var separador = new TreeNode("Separador") { Name = "Separador", Tag = new ConfigMaterial { CostoProveedor = 30 } };
+            var cristal2 = new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100 } };
+
+            ins.Nodes.Add(cristal1);
+            ins.Nodes.Add(separador);
+            ins.Nodes.Add(cristal2);
+
             Trview1.Nodes.Add(ins);
             Trview1.ExpandAll();
         }
@@ -52,9 +105,9 @@ namespace CQuote.Calculadora.App
 
                 // Insertar el ensamble LAM en su lugar
                 var lam = new TreeNode("LAM") { Name = "LAM" };
-                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal" });
-                lam.Nodes.Add(new TreeNode("Pelicula") { Name = "Pelicula" });
-                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal" });
+                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100 } });
+                lam.Nodes.Add(new TreeNode("Pelicula") { Name = "Pelicula", Tag = new ConfigMaterial { CostoProveedor = 50 } });
+                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100 } });
 
                 parent.Nodes.Insert(index, lam);
                 Trview1.ExpandAll();
@@ -63,9 +116,9 @@ namespace CQuote.Calculadora.App
             {
                 // Si no hay selección, se agrega como raíz
                 var lam = new TreeNode("LAM") { Name = "LAM" };
-                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal" });
-                lam.Nodes.Add(new TreeNode("Pelicula") { Name = "Pelicula" });
-                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal" });
+                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100 } });
+                lam.Nodes.Add(new TreeNode("Pelicula") { Name = "Pelicula", Tag = new ConfigMaterial { CostoProveedor = 50 } });
+                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100 } });
                 Trview1.Nodes.Add(lam);
                 Trview1.ExpandAll();
             }
@@ -74,17 +127,23 @@ namespace CQuote.Calculadora.App
         // --- Botones para agregar nodos después del seleccionado ---
         private void BtnCristal_Click(object sender, EventArgs e)
         {
-            InsertarDespuesSeleccionado(new TreeNode("Cristal") { Name = "Cristal" });
+            var nodo = new TreeNode("Cristal") { Name = "Cristal" };
+            nodo.Tag = new ConfigMaterial { CostoProveedor = 100 };
+            InsertarDespuesSeleccionado(nodo);
         }
 
         private void BtnPelicula_Click(object sender, EventArgs e)
         {
-            InsertarDespuesSeleccionado(new TreeNode("Pelicula") { Name = "Pelicula" });
+            var nodo = new TreeNode("Pelicula") { Name = "Pelicula" };
+            nodo.Tag = new ConfigMaterial { CostoProveedor = 50 };
+            InsertarDespuesSeleccionado(nodo);
         }
 
         private void BtnSeparador_Click(object sender, EventArgs e)
         {
-            InsertarDespuesSeleccionado(new TreeNode("Separador") { Name = "Separador" });
+            var nodo = new TreeNode("Separador") { Name = "Separador" };
+            nodo.Tag = new ConfigMaterial { CostoProveedor = 30 };
+            InsertarDespuesSeleccionado(nodo);
         }
 
         private void InsertarDespuesSeleccionado(TreeNode nuevo)
@@ -125,10 +184,10 @@ namespace CQuote.Calculadora.App
         // Método recursivo para recorrer hojas
         private void CalcularNodo(TreeNode node, CalculadoraPrecios calc, ref decimal total, ref string detalle)
         {
-            if (node.Nodes.Count == 0)
+            if (node.Nodes.Count == 0 && node.Tag is ConfigMaterial config)
             {
-                // Es hoja → calcular
-                ProductoResultado resultado = EjecutarProceso(node.Name, calc);
+                // Es hoja → calcular con configuración
+                ProductoResultado resultado = EjecutarProceso(node.Name, calc, config);
                 total += resultado.PrecioFinal;
                 detalle += resultado.Detalle + "\n\n";
             }
@@ -143,26 +202,27 @@ namespace CQuote.Calculadora.App
             }
         }
 
-        // --- Métodos privados con parámetros fijos ---
-        private ProductoResultado EjecutarProceso(string proceso, CalculadoraPrecios calc)
+        // --- Métodos privados con parámetros dinámicos (solo costoProveedor) ---
+        private ProductoResultado EjecutarProceso(string proceso, CalculadoraPrecios calc, ConfigMaterial config)
         {
             switch (proceso)
             {
                 case "Cristal":
-                    return EjecutarCristal(calc);
+                    return EjecutarCristal(calc, config);
                 case "Pelicula":
-                    return EjecutarPelicula(calc);
+                    return EjecutarPelicula(calc, config);
                 case "Separador":
-                    return EjecutarSeparador(calc);
+                    return EjecutarSeparador(calc, config);
                 default:
                     throw new InvalidOperationException($"Proceso desconocido: {proceso}");
             }
         }
 
-        private ProductoResultado EjecutarCristal(CalculadoraPrecios calc)
+        private ProductoResultado EjecutarCristal(CalculadoraPrecios calc, ConfigMaterial config)
         {
             return calc.CalcularCristal(
-                costoProveedor: 100, costoImportacion: 20,
+                costoProveedor: config.CostoProveedor, // dinámico
+                costoImportacion: 20,
                 factor1: 0.95m, factor2: 0.90m, factor3: 1.02m,
                 merma: 1.01m, factorCorte: 1.0m, costoProcesoCorte: 15,
                 costoProcesoTermico: 10, costoImpresion: 5, costoCantos: 18,
@@ -172,31 +232,22 @@ namespace CQuote.Calculadora.App
                 barrenosTotales: 2, avellanadosTotales: 1, resaquesTotales: 1);
         }
 
-        private ProductoResultado EjecutarPelicula(CalculadoraPrecios calc)
+        private ProductoResultado EjecutarPelicula(CalculadoraPrecios calc, ConfigMaterial config)
         {
             return calc.CalcularPelicula(
-                costoProveedor: 50, costoImportacion: 10,
+                costoProveedor: config.CostoProveedor, // dinámico
+                costoImportacion: 10,
                 factor1: 0.95m, factor2: 0.90m, factor3: 1.02m,
                 desperdicio: 0.10m, margen: 0.20m);
         }
 
-        private ProductoResultado EjecutarSeparador(CalculadoraPrecios calc)
+        private ProductoResultado EjecutarSeparador(CalculadoraPrecios calc, ConfigMaterial config)
         {
             return calc.CalcularSeparador(
-                costoProveedor: 30, costoImportacion: 5,
+                costoProveedor: config.CostoProveedor, // dinámico
+                costoImportacion: 5,
                 factor1: 0.95m, factor2: 0.90m, factor3: 1.02m,
                 margen: 0.15m, areaTotal: 2.4m, perimetroTotal: 6.4m);
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            // Inicializar TreeView vacío
-            Trview1.Nodes.Clear();
-        }
-
-        private void button4_Click_1(object sender, EventArgs e)
-        {
-
         }
 
         // --- Botón Borrar ---

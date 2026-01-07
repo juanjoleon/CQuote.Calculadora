@@ -37,11 +37,12 @@ partial class Form1
         BtnLam = new Button();
         BtnIns = new Button();
         BtnBorrar = new Button();
+        panel1 = new Panel();
         SuspendLayout();
         // 
         // BtnCristal
         // 
-        BtnCristal.Location = new Point(363, 157);
+        BtnCristal.Location = new Point(957, 154);
         BtnCristal.Name = "BtnCristal";
         BtnCristal.Size = new Size(94, 29);
         BtnCristal.TabIndex = 0;
@@ -57,7 +58,7 @@ partial class Form1
         // 
         // BtnPelicula
         // 
-        BtnPelicula.Location = new Point(363, 205);
+        BtnPelicula.Location = new Point(957, 202);
         BtnPelicula.Name = "BtnPelicula";
         BtnPelicula.Size = new Size(94, 29);
         BtnPelicula.TabIndex = 0;
@@ -66,7 +67,7 @@ partial class Form1
         // 
         // BtnSeparador
         // 
-        BtnSeparador.Location = new Point(363, 264);
+        BtnSeparador.Location = new Point(957, 261);
         BtnSeparador.Name = "BtnSeparador";
         BtnSeparador.Size = new Size(94, 29);
         BtnSeparador.TabIndex = 0;
@@ -75,17 +76,16 @@ partial class Form1
         // 
         // BtnCalcular
         // 
-        BtnCalcular.Location = new Point(644, 479);
+        BtnCalcular.Location = new Point(1094, 483);
         BtnCalcular.Name = "BtnCalcular";
         BtnCalcular.Size = new Size(94, 29);
         BtnCalcular.TabIndex = 0;
         BtnCalcular.Text = "Calcular";
         BtnCalcular.UseVisualStyleBackColor = true;
-        BtnCalcular.Click += button4_Click_1;
         // 
         // BtnMon
         // 
-        BtnMon.Location = new Point(535, 157);
+        BtnMon.Location = new Point(1129, 154);
         BtnMon.Name = "BtnMon";
         BtnMon.Size = new Size(94, 29);
         BtnMon.TabIndex = 0;
@@ -94,7 +94,7 @@ partial class Form1
         // 
         // BtnLam
         // 
-        BtnLam.Location = new Point(535, 205);
+        BtnLam.Location = new Point(1129, 202);
         BtnLam.Name = "BtnLam";
         BtnLam.Size = new Size(94, 29);
         BtnLam.TabIndex = 0;
@@ -103,7 +103,7 @@ partial class Form1
         // 
         // BtnIns
         // 
-        BtnIns.Location = new Point(535, 254);
+        BtnIns.Location = new Point(1129, 251);
         BtnIns.Name = "BtnIns";
         BtnIns.Size = new Size(94, 29);
         BtnIns.TabIndex = 0;
@@ -112,19 +112,26 @@ partial class Form1
         // 
         // BtnBorrar
         // 
-        BtnBorrar.Location = new Point(644, 531);
+        BtnBorrar.Location = new Point(1094, 535);
         BtnBorrar.Name = "BtnBorrar";
         BtnBorrar.Size = new Size(94, 29);
         BtnBorrar.TabIndex = 0;
         BtnBorrar.Text = "Borrar";
         BtnBorrar.UseVisualStyleBackColor = true;
-        BtnBorrar.Click += button4_Click_1;
+        // 
+        // panel1
+        // 
+        panel1.Location = new Point(345, 39);
+        panel1.Name = "panel1";
+        panel1.Size = new Size(408, 525);
+        panel1.TabIndex = 2;
         // 
         // Form1
         // 
         AutoScaleDimensions = new SizeF(8F, 20F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(810, 630);
+        ClientSize = new Size(1554, 630);
+        Controls.Add(panel1);
         Controls.Add(Trview1);
         Controls.Add(BtnSeparador);
         Controls.Add(BtnPelicula);
@@ -136,7 +143,6 @@ partial class Form1
         Controls.Add(BtnCristal);
         Name = "Form1";
         Text = "Form1";
-        Load += Form1_Load;
         ResumeLayout(false);
     }
 
@@ -151,4 +157,5 @@ partial class Form1
     private Button BtnLam;
     private Button BtnIns;
     private Button BtnBorrar;
+    private Panel panel1;
 }
