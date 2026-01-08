@@ -107,7 +107,7 @@ namespace CQuote.Calculadora.App
                 // Insertar el ensamble LAM en su lugar
                 var lam = new TreeNode("LAM") { Name = "LAM" };
                 lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100, Num = "1" } });
-                lam.Nodes.Add(new TreeNode("Pelicula") { Name = "Pelicula", Tag = new ConfigMaterial { CostoProveedor = 50 } });
+                lam.Nodes.Add(new TreeNode("Pelicula") { Name = "Pelicula", Tag = new ConfigMaterial { CostoProveedor = 0 } });
                 lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100, Num = "2" } });
 
                 parent.Nodes.Insert(index, lam);
@@ -118,7 +118,7 @@ namespace CQuote.Calculadora.App
                 // Si no hay selección, se agrega como raíz
                 var lam = new TreeNode("LAM") { Name = "LAM" };
                 lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100, Num = "1" } });
-                lam.Nodes.Add(new TreeNode("Pelicula") { Name = "Pelicula", Tag = new ConfigMaterial { CostoProveedor = 50 } });
+                lam.Nodes.Add(new TreeNode("Pelicula") { Name = "Pelicula", Tag = new ConfigMaterial { CostoProveedor = 0 } });
                 lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100, Num = "2" } });
                 Trview1.Nodes.Add(lam);
                 Trview1.ExpandAll();
@@ -136,14 +136,14 @@ namespace CQuote.Calculadora.App
         private void BtnPelicula_Click(object sender, EventArgs e)
         {
             var nodo = new TreeNode("Pelicula") { Name = "Pelicula" };
-            nodo.Tag = new ConfigMaterial { CostoProveedor = 50 };
+            nodo.Tag = new ConfigMaterial { CostoProveedor = 0 };
             InsertarDespuesSeleccionado(nodo);
         }
 
         private void BtnSeparador_Click(object sender, EventArgs e)
         {
             var nodo = new TreeNode("Separador") { Name = "Separador" };
-            nodo.Tag = new ConfigMaterial { CostoProveedor = 30 };
+            nodo.Tag = new ConfigMaterial { CostoProveedor = 0 };
             InsertarDespuesSeleccionado(nodo);
         }
 
@@ -165,12 +165,12 @@ namespace CQuote.Calculadora.App
         // --- Botón Calcular ---
         private void button4_Click(object sender, EventArgs e)
         {
-            // Validar que todos los nodos de tipo Cristal tengan Num capturado
+            // Validar que todos los nodos de tipo Cristal, Pelicula y Separador tengan Num capturado y costo válido
             foreach (TreeNode root in Trview1.Nodes)
             {
-                if (!ValidarNumCristal(root))
+                if (!ValidarNumMaterial(root))
                 {
-                    MessageBox.Show("Debe capturar el número de cristal antes de calcular.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Debe capturar el número y tener costo válido en cada material antes de calcular.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
             }
@@ -192,16 +192,17 @@ namespace CQuote.Calculadora.App
             frmDetalle.ShowDialog();
         }
 
-        private bool ValidarNumCristal(TreeNode node)
+        private bool ValidarNumMaterial(TreeNode node)
         {
-            if (node.Name == "Cristal" && node.Tag is ConfigMaterial config)
+            if ((node.Name == "Cristal" || node.Name == "Pelicula" || node.Name == "Separador") && node.Tag is ConfigMaterial config)
             {
-                if (string.IsNullOrWhiteSpace(config.Num))
+                // El número debe estar capturado y el costo debe ser distinto de cero
+                if (string.IsNullOrWhiteSpace(config.Num) || config.CostoProveedor == 0)
                     return false;
             }
             foreach (TreeNode hijo in node.Nodes)
             {
-                if (!ValidarNumCristal(hijo))
+                if (!ValidarNumMaterial(hijo))
                     return false;
             }
             return true;
@@ -276,11 +277,17 @@ namespace CQuote.Calculadora.App
 
         private ProductoResultado EjecutarPelicula(CalculadoraPrecios calc, ConfigMaterial config)
         {
+            // Calcular el desperdicio real para película
+            decimal desperdicio = config.Desperdicio;
+            if (desperdicio < 0 || desperdicio > 1) desperdicio = 0.10m; // fallback seguro
             return calc.CalcularPelicula(
                 costoProveedor: config.CostoProveedor, // dinámico
-                costoImportacion: 10,
-                factor1: 0.95m, factor2: 0.90m, factor3: 1.02m,
-                desperdicio: 0.10m, margen: 0.20m);
+                costoImportacion: config.CostoImportacion,
+                factor1: config.Factor1,
+                factor2: config.Factor2,
+                factor3: config.Factor3,
+                desperdicio: desperdicio,
+                margen: 0.20m);
         }
 
         private ProductoResultado EjecutarSeparador(CalculadoraPrecios calc, ConfigMaterial config)

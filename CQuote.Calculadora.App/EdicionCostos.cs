@@ -51,6 +51,17 @@ namespace CQuote.Calculadora.App
                     costoProcesoTermico = ObtenerCostoProcesoTermicoBD(procesoTermico, mat.TipoTemplado);
                     total = costoLamina + costoCorte + costoProcesoTermico;
                 }
+                else if (tipo == "Pelicula")
+                {
+                    calculo1 = (mat.CostoProveedor + mat.CostoImportacion) / (mat.Factor1 == 0 ? 1 : mat.Factor1);
+                    calculo2 = calculo1 / (mat.Factor2 == 0 ? 1 : mat.Factor2);
+                    calculo3 = calculo2 * mat.Factor3;
+                    // Aplica desperdicio real de película
+                    costoLamina = (1 - mat.Desperdicio) != 0 ? calculo3 / (1 - mat.Desperdicio) : 0;
+                    costoCorte = 0;
+                    costoProcesoTermico = 0;
+                    total = costoLamina;
+                }
                 else
                 {
                     calculo1 = (mat.CostoProveedor + mat.CostoImportacion) / (mat.Factor1 == 0 ? 1 : mat.Factor1);

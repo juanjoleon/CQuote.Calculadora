@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Data.SqlClient;
 
 namespace CQuote.Calculadora.App
 {
@@ -16,28 +17,18 @@ namespace CQuote.Calculadora.App
         public void LoadConfig(ConfigMaterial config)
         {
             this.config = config;
-
             if (config != null)
             {
-                if (this.Controls.ContainsKey("TxtPeliculaNum"))
-                    ((TextBox)this.Controls["TxtPeliculaNum"]).Text = config.Num ?? string.Empty;
-
-                if (this.Controls.ContainsKey("LblNombrePelicula"))
-                    ((Label)this.Controls["LblNombrePelicula"]).Text = config.Descripcion ?? "Descripción Película";
-
-                if (this.Controls.ContainsKey("TxtPeliculaCosto"))
-                    ((TextBox)this.Controls["TxtPeliculaCosto"]).Text = config.CostoProveedor.ToString();
+                TxtNumPelicula.Text = config.Num ?? string.Empty;
+                LblNombrePelicula.Text = config.Descripcion ?? "Descripción Película";
+                // Si tienes un TextBox para el costo, agrégalo aquí
+                // TxtPeliculaCosto.Text = config.CostoProveedor.ToString();
             }
             else
             {
-                if (this.Controls.ContainsKey("TxtPeliculaNum"))
-                    ((TextBox)this.Controls["TxtPeliculaNum"]).Text = string.Empty;
-
-                if (this.Controls.ContainsKey("LblNombrePelicula"))
-                    ((Label)this.Controls["LblNombrePelicula"]).Text = "Descripción Película";
-
-                if (this.Controls.ContainsKey("TxtPeliculaCosto"))
-                    ((TextBox)this.Controls["TxtPeliculaCosto"]).Text = string.Empty;
+                TxtNumPelicula.Text = string.Empty;
+                LblNombrePelicula.Text = "Descripción Película";
+                // TxtPeliculaCosto.Text = string.Empty;
             }
         }
 
@@ -46,8 +37,8 @@ namespace CQuote.Calculadora.App
         {
             if (config == null) return;
 
-            if (this.Controls.ContainsKey("TxtPeliculaNum"))
-                config.Num = ((TextBox)this.Controls["TxtPeliculaNum"]).Text;
+            if (this.Controls.ContainsKey("TxtNumPelicula"))
+                config.Num = ((TextBox)this.Controls["TxtNumPelicula"]).Text;
 
             if (this.Controls.ContainsKey("LblNombrePelicula"))
                 config.Descripcion = ((Label)this.Controls["LblNombrePelicula"]).Text;
@@ -59,6 +50,67 @@ namespace CQuote.Calculadora.App
             }
 
             MessageBox.Show("Configuración de Película actualizada.");
+        }
+
+        private void TxtNumPelicula_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                BuscarPelicula(TxtNumPelicula.Text);
+            }
+        }
+
+        private void BuscarPelicula(string numero)
+        {
+            string connectionString = "Server=lapjjlg\\SQLEXPRESS;Database=CQuote;Trusted_Connection=True;";
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                // Buscar descripción y costos en Materiales y Costos
+                string queryMateriales = "SELECT DESCRIPCION FROM Materiales WHERE Tipo='Pelicula' AND Num=@Num";
+                using (SqlCommand cmd = new SqlCommand(queryMateriales, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Num", numero);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            string descripcion = reader["DESCRIPCION"].ToString();
+                            if (config != null)
+                            {
+                                config.Num = numero;
+                                config.Descripcion = descripcion;
+                            }
+                            LblNombrePelicula.Text = descripcion;
+                        }
+                    }
+                }
+                string queryCostos = @"SELECT TOP 1 Costo, Importacion, Factor, Factor2, Factor3, Desperdicio 
+                                       FROM Costos 
+                                       WHERE Actual='True' AND Tipo='Pelicula' AND Mercado='NAL' AND Num=@Num";
+                using (SqlCommand cmd = new SqlCommand(queryCostos, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Num", numero);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read() && config != null)
+                        {
+                            if (reader["Costo"] != DBNull.Value)
+                                config.CostoProveedor = Convert.ToDecimal(reader["Costo"]);
+                            if (reader["Importacion"] != DBNull.Value)
+                                config.CostoImportacion = Convert.ToDecimal(reader["Importacion"]);
+                            if (reader["Factor"] != DBNull.Value)
+                                config.Factor1 = Convert.ToDecimal(reader["Factor"]);
+                            if (reader["Factor2"] != DBNull.Value)
+                                config.Factor2 = Convert.ToDecimal(reader["Factor2"]);
+                            if (reader["Factor3"] != DBNull.Value)
+                                config.Factor3 = Convert.ToDecimal(reader["Factor3"]);
+                            if (reader["Desperdicio"] != DBNull.Value)
+                                config.Desperdicio = Convert.ToDecimal(reader["Desperdicio"]);
+                        }
+                    }
+                }
+            }
         }
     }
 }
