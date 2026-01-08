@@ -15,7 +15,7 @@ namespace CQuote.Calculadora.App
             InitializeComponent();
         }
 
-        public void CargarMateriales(List<(string Tipo, ConfigMaterial Material)> materiales)
+        public void CargarMateriales(List<(string Tipo, ConfigMaterial Material)> materiales, string procesoTermico)
         {
             DtvDetalle.Columns.Clear();
             DtvDetalle.Rows.Clear();
@@ -33,8 +33,10 @@ namespace CQuote.Calculadora.App
             DtvDetalle.Columns.Add("CostoLamina", "Costo Lámina");
             DtvDetalle.Columns.Add("Desperdicio", "Desperdicio");
             DtvDetalle.Columns.Add("CostoCorte", "Costo Corte");
+            DtvDetalle.Columns.Add("NombreProcesoTermico", "Nombre Proceso Térmico");
             DtvDetalle.Columns.Add("CostoProcesoTermico", "Costo Proceso Térmico");
             DtvDetalle.Columns.Add("Total", "Total con Proceso Térmico");
+            DtvDetalle.Columns.Add("TipoTemplado", "TIPOTEMPLADO");
 
             foreach (var (tipo, mat) in materiales)
             {
@@ -46,7 +48,7 @@ namespace CQuote.Calculadora.App
                     calculo3 = calculo2 * mat.Factor3;
                     costoLamina = calculo3 * 1.01m; // merma fija
                     costoCorte = mat.CostoProcesoCorte;
-                    costoProcesoTermico = 10; // fijo
+                    costoProcesoTermico = ObtenerCostoProcesoTermicoBD(procesoTermico, mat.TipoTemplado);
                     total = costoLamina + costoCorte + costoProcesoTermico;
                 }
                 else
@@ -66,17 +68,55 @@ namespace CQuote.Calculadora.App
                     mat.CostoProveedor,
                     mat.CostoImportacion,
                     mat.Factor1,
-                    calculo1,
+                    calculo1.ToString("C2"),
                     mat.Factor2,
-                    calculo2,
+                    calculo2.ToString("C2"),
                     mat.Factor3,
                     calculo3,
                     costoLamina,
                     mat.Desperdicio,
                     costoCorte,
+                    tipo == "Cristal" ? procesoTermico : string.Empty,
                     costoProcesoTermico,
-                    total
+                    total,
+                    mat.TipoTemplado ?? string.Empty
                 );
+            }
+        }
+
+        private decimal ObtenerCostoProcesoTermicoBD(string procesoTermico, string? tipoTemplado)
+        {
+            if (string.IsNullOrWhiteSpace(tipoTemplado))
+                return 0;
+            try
+            {
+                string connectionString = "Server=lapjjlg\\SQLEXPRESS;Database=CQuote;Trusted_Connection=True;";
+                using (var conn = new System.Data.SqlClient.SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    decimal energia = 0, mantenimiento = 0;
+                    string queryEnergia = @"SELECT Valor3 FROM Generales WHERE Concepto = N'Proceso termico' AND Valor = @ProcesoTermico AND Valor2 = @TipoTemplado AND Valor1 = N'Energia'";
+                    string queryMantenimiento = @"SELECT Valor3 FROM Generales WHERE Concepto = N'Proceso termico' AND Valor = @ProcesoTermico AND Valor2 = @TipoTemplado AND Valor1 = N'Mantenimiento'";
+                    using (var cmd = new System.Data.SqlClient.SqlCommand(queryEnergia, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@ProcesoTermico", procesoTermico);
+                        cmd.Parameters.AddWithValue("@TipoTemplado", tipoTemplado);
+                        var result = cmd.ExecuteScalar();
+                        energia = result != null && result != DBNull.Value ? Convert.ToDecimal(result) : 0;
+                    }
+                    using (var cmd = new System.Data.SqlClient.SqlCommand(queryMantenimiento, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@ProcesoTermico", procesoTermico);
+                        cmd.Parameters.AddWithValue("@TipoTemplado", tipoTemplado);
+                        var result = cmd.ExecuteScalar();
+                        mantenimiento = result != null && result != DBNull.Value ? Convert.ToDecimal(result) : 0;
+                    }
+                    return energia + mantenimiento;
+                }
+            }
+            catch
+            {
+                return 0;
             }
         }
     }

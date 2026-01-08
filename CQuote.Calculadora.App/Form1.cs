@@ -72,7 +72,7 @@ namespace CQuote.Calculadora.App
         {
             var mon = new TreeNode("MON") { Name = "MON" };
             var cristal = new TreeNode("Cristal") { Name = "Cristal" };
-            cristal.Tag = new ConfigMaterial { CostoProveedor = 100 };
+            cristal.Tag = new ConfigMaterial { CostoProveedor = 100, Num = "1" }; // Asigna el número real aquí
             mon.Nodes.Add(cristal);
             Trview1.Nodes.Add(mon);
             Trview1.ExpandAll();
@@ -82,9 +82,9 @@ namespace CQuote.Calculadora.App
         {
             var ins = new TreeNode("INS") { Name = "INS" };
 
-            var cristal1 = new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100 } };
+            var cristal1 = new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100, Num = "1" } };
             var separador = new TreeNode("Separador") { Name = "Separador", Tag = new ConfigMaterial { CostoProveedor = 30 } };
-            var cristal2 = new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100 } };
+            var cristal2 = new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100, Num = "2" } };
 
             ins.Nodes.Add(cristal1);
             ins.Nodes.Add(separador);
@@ -106,9 +106,9 @@ namespace CQuote.Calculadora.App
 
                 // Insertar el ensamble LAM en su lugar
                 var lam = new TreeNode("LAM") { Name = "LAM" };
-                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100 } });
+                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100, Num = "1" } });
                 lam.Nodes.Add(new TreeNode("Pelicula") { Name = "Pelicula", Tag = new ConfigMaterial { CostoProveedor = 50 } });
-                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100 } });
+                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100, Num = "2" } });
 
                 parent.Nodes.Insert(index, lam);
                 Trview1.ExpandAll();
@@ -117,9 +117,9 @@ namespace CQuote.Calculadora.App
             {
                 // Si no hay selección, se agrega como raíz
                 var lam = new TreeNode("LAM") { Name = "LAM" };
-                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100 } });
+                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100, Num = "1" } });
                 lam.Nodes.Add(new TreeNode("Pelicula") { Name = "Pelicula", Tag = new ConfigMaterial { CostoProveedor = 50 } });
-                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100 } });
+                lam.Nodes.Add(new TreeNode("Cristal") { Name = "Cristal", Tag = new ConfigMaterial { CostoProveedor = 100, Num = "2" } });
                 Trview1.Nodes.Add(lam);
                 Trview1.ExpandAll();
             }
@@ -129,7 +129,7 @@ namespace CQuote.Calculadora.App
         private void BtnCristal_Click(object sender, EventArgs e)
         {
             var nodo = new TreeNode("Cristal") { Name = "Cristal" };
-            nodo.Tag = new ConfigMaterial { CostoProveedor = 100 };
+            nodo.Tag = new ConfigMaterial { CostoProveedor = 100, Num = "1" };
             InsertarDespuesSeleccionado(nodo);
         }
 
@@ -165,6 +165,16 @@ namespace CQuote.Calculadora.App
         // --- Botón Calcular ---
         private void button4_Click(object sender, EventArgs e)
         {
+            // Validar que todos los nodos de tipo Cristal tengan Num capturado
+            foreach (TreeNode root in Trview1.Nodes)
+            {
+                if (!ValidarNumCristal(root))
+                {
+                    MessageBox.Show("Debe capturar el número de cristal antes de calcular.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
             var calc = new CalculadoraPrecios();
             decimal total = 0;
             string detalle = "";
@@ -180,6 +190,21 @@ namespace CQuote.Calculadora.App
             var frmDetalle = new Detalle();
             frmDetalle.rtxtDetalle.Text = detalle;
             frmDetalle.ShowDialog();
+        }
+
+        private bool ValidarNumCristal(TreeNode node)
+        {
+            if (node.Name == "Cristal" && node.Tag is ConfigMaterial config)
+            {
+                if (string.IsNullOrWhiteSpace(config.Num))
+                    return false;
+            }
+            foreach (TreeNode hijo in node.Nodes)
+            {
+                if (!ValidarNumCristal(hijo))
+                    return false;
+            }
+            return true;
         }
 
         // Método recursivo para recorrer hojas
@@ -280,9 +305,34 @@ namespace CQuote.Calculadora.App
         {
             var materiales = new List<(string Tipo, ConfigMaterial Material)>();
             RecopilarMateriales(Trview1.Nodes, materiales);
+            string procesoTermico = ObtenerProcesoTermicoSeleccionado();
             var frm = new EdicionCostos();
-            frm.CargarMateriales(materiales);
+            frm.CargarMateriales(materiales, procesoTermico);
             frm.ShowDialog();
+        }
+
+        private string ObtenerProcesoTermicoSeleccionado()
+        {
+            // Busca el control de tipo ConfigCristalControl visible y obtiene el radio button seleccionado
+            if (configCristalControl.Visible)
+            {
+                var rbTemplado = configCristalControl.Controls.Find("RbTemplado", true);
+                if (rbTemplado.Length > 0 && ((RadioButton)rbTemplado[0]).Checked)
+                    return "Templado";
+                var rbRecocido = configCristalControl.Controls.Find("RbRecocido", true);
+                if (rbRecocido.Length > 0 && ((RadioButton)rbRecocido[0]).Checked)
+                    return "Recocido";
+                var rbCurvoTemplado = configCristalControl.Controls.Find("RbCurvoTemplado", true);
+                if (rbCurvoTemplado.Length > 0 && ((RadioButton)rbCurvoTemplado[0]).Checked)
+                    return "Curvo Templado";
+                var rbCurvoRecocido = configCristalControl.Controls.Find("RbCurvoRecocido", true);
+                if (rbCurvoRecocido.Length > 0 && ((RadioButton)rbCurvoRecocido[0]).Checked)
+                    return "Curvo Recocido";
+                var rbSemitemplado = configCristalControl.Controls.Find("RbSemitemplado", true);
+                if (rbSemitemplado.Length > 0 && ((RadioButton)rbSemitemplado[0]).Checked)
+                    return "Semitemplado";
+            }
+            return "Recocido"; // Valor por defecto
         }
 
         private void RecopilarMateriales(TreeNodeCollection nodes, List<(string Tipo, ConfigMaterial Material)> lista)

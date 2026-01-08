@@ -30,6 +30,11 @@
             RbSemitemplado = new RadioButton();
             RbRecocido = new RadioButton();
             label2 = new Label();
+            RbTemplado = new RadioButton();
+            groupBox1 = new GroupBox();
+            groupBox2 = new GroupBox();
+            groupBox1.SuspendLayout();
+            groupBox2.SuspendLayout();
             SuspendLayout();
             // 
             // TxtCristalNum
@@ -52,7 +57,7 @@
             // comboBox1
             // 
             comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(199, 292);
+            comboBox1.Location = new Point(148, 425);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(151, 28);
             comboBox1.TabIndex = 2;
@@ -69,7 +74,7 @@
             // Rbfactorcorte1
             // 
             Rbfactorcorte1.AutoSize = true;
-            Rbfactorcorte1.Location = new Point(124, 95);
+            Rbfactorcorte1.Location = new Point(25, 35);
             Rbfactorcorte1.Name = "Rbfactorcorte1";
             Rbfactorcorte1.Size = new Size(68, 24);
             Rbfactorcorte1.TabIndex = 5;
@@ -81,7 +86,7 @@
             // Rbfactorcorte2
             // 
             Rbfactorcorte2.AutoSize = true;
-            Rbfactorcorte2.Location = new Point(209, 95);
+            Rbfactorcorte2.Location = new Point(110, 35);
             Rbfactorcorte2.Name = "Rbfactorcorte2";
             Rbfactorcorte2.Size = new Size(90, 24);
             Rbfactorcorte2.TabIndex = 5;
@@ -93,7 +98,7 @@
             // Rbfactorcorte3
             // 
             Rbfactorcorte3.AutoSize = true;
-            Rbfactorcorte3.Location = new Point(305, 93);
+            Rbfactorcorte3.Location = new Point(206, 33);
             Rbfactorcorte3.Name = "Rbfactorcorte3";
             Rbfactorcorte3.Size = new Size(84, 24);
             Rbfactorcorte3.TabIndex = 5;
@@ -105,7 +110,7 @@
             // Rbfactorcorte4
             // 
             Rbfactorcorte4.AutoSize = true;
-            Rbfactorcorte4.Location = new Point(405, 91);
+            Rbfactorcorte4.Location = new Point(306, 31);
             Rbfactorcorte4.Name = "Rbfactorcorte4";
             Rbfactorcorte4.Size = new Size(78, 24);
             Rbfactorcorte4.TabIndex = 5;
@@ -117,7 +122,7 @@
             // RbCurvoRecocido
             // 
             RbCurvoRecocido.AutoSize = true;
-            RbCurvoRecocido.Location = new Point(492, 151);
+            RbCurvoRecocido.Location = new Point(269, 37);
             RbCurvoRecocido.Name = "RbCurvoRecocido";
             RbCurvoRecocido.Size = new Size(130, 24);
             RbCurvoRecocido.TabIndex = 7;
@@ -128,7 +133,7 @@
             // RbCurvoTemplado
             // 
             RbCurvoTemplado.AutoSize = true;
-            RbCurvoTemplado.Location = new Point(347, 151);
+            RbCurvoTemplado.Location = new Point(155, 69);
             RbCurvoTemplado.Name = "RbCurvoTemplado";
             RbCurvoTemplado.Size = new Size(139, 24);
             RbCurvoTemplado.TabIndex = 8;
@@ -139,7 +144,7 @@
             // RbSemitemplado
             // 
             RbSemitemplado.AutoSize = true;
-            RbSemitemplado.Location = new Point(222, 151);
+            RbSemitemplado.Location = new Point(21, 69);
             RbSemitemplado.Name = "RbSemitemplado";
             RbSemitemplado.Size = new Size(128, 24);
             RbSemitemplado.TabIndex = 9;
@@ -150,7 +155,7 @@
             // RbRecocido
             // 
             RbRecocido.AutoSize = true;
-            RbRecocido.Location = new Point(124, 153);
+            RbRecocido.Location = new Point(21, 39);
             RbRecocido.Name = "RbRecocido";
             RbRecocido.Size = new Size(92, 24);
             RbRecocido.TabIndex = 10;
@@ -161,30 +166,66 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(20, 130);
+            label2.Location = new Point(20, 235);
             label2.Name = "label2";
             label2.Size = new Size(116, 20);
             label2.TabIndex = 6;
             label2.Text = "Proceso térmico";
             // 
+            // RbTemplado
+            // 
+            RbTemplado.AutoSize = true;
+            RbTemplado.Location = new Point(155, 37);
+            RbTemplado.Name = "RbTemplado";
+            RbTemplado.Size = new Size(97, 24);
+            RbTemplado.TabIndex = 10;
+            RbTemplado.TabStop = true;
+            RbTemplado.Text = "Templado";
+            RbTemplado.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(Rbfactorcorte1);
+            groupBox1.Controls.Add(Rbfactorcorte2);
+            groupBox1.Controls.Add(Rbfactorcorte3);
+            groupBox1.Controls.Add(Rbfactorcorte4);
+            groupBox1.Location = new Point(40, 132);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(408, 77);
+            groupBox1.TabIndex = 11;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "groupBox1";
+            // 
+            // groupBox2
+            // 
+            groupBox2.Controls.Add(RbRecocido);
+            groupBox2.Controls.Add(RbTemplado);
+            groupBox2.Controls.Add(RbCurvoRecocido);
+            groupBox2.Controls.Add(RbSemitemplado);
+            groupBox2.Controls.Add(RbCurvoTemplado);
+            groupBox2.Location = new Point(40, 272);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new Size(414, 109);
+            groupBox2.TabIndex = 12;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "groupBox2";
+            // 
             // ConfigCristalControl
             // 
-            Controls.Add(RbCurvoRecocido);
-            Controls.Add(RbCurvoTemplado);
-            Controls.Add(RbSemitemplado);
-            Controls.Add(RbRecocido);
+            Controls.Add(groupBox2);
+            Controls.Add(groupBox1);
             Controls.Add(label2);
-            Controls.Add(Rbfactorcorte4);
-            Controls.Add(Rbfactorcorte3);
-            Controls.Add(Rbfactorcorte2);
-            Controls.Add(Rbfactorcorte1);
             Controls.Add(comboBox1);
             Controls.Add(TxtCristalNum);
             Controls.Add(label1);
             Controls.Add(LblNombreCristal);
             Name = "ConfigCristalControl";
-            Size = new Size(627, 427);
+            Size = new Size(511, 478);
             Load += ConfigCristalControl_Load;
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            groupBox2.ResumeLayout(false);
+            groupBox2.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -200,5 +241,8 @@
         private RadioButton RbSemitemplado;
         private RadioButton RbRecocido;
         private Label label2;
+        private RadioButton RbTemplado;
+        private GroupBox groupBox1;
+        private GroupBox groupBox2;
     }
 }

@@ -88,7 +88,7 @@ namespace CQuote.Calculadora.App
                 conn.Open();
 
                 // 1. Buscar descripción en Materiales
-                string queryMateriales = "SELECT DESCRIPCION FROM Materiales WHERE Tipo='Cristal' AND Num=@Num";
+                string queryMateriales = "SELECT DESCRIPCION, TIPOTEMPLADO FROM Materiales WHERE Tipo='Cristal' AND Num=@Num";
                 using (SqlCommand cmd = new SqlCommand(queryMateriales, conn))
                 {
                     cmd.Parameters.AddWithValue("@Num", numero);
@@ -97,11 +97,13 @@ namespace CQuote.Calculadora.App
                         if (reader.Read())
                         {
                             string descripcion = reader["DESCRIPCION"].ToString();
+                            string tipoTemplado = reader["TIPOTEMPLADO"].ToString();
                             LblNombreCristal.Text = descripcion;
                             if (config != null)
                             {
                                 config.Num = numero;
                                 config.Descripcion = descripcion;
+                                config.TipoTemplado = tipoTemplado;
                             }
                         }
                     }
