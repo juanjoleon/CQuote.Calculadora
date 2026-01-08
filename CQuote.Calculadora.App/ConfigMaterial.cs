@@ -5,5 +5,17 @@
         public string? Num { get; set; }          // Número del material
         public string? Descripcion { get; set; }  // Descripción del material
         public decimal CostoProveedor { get; set; } // Costo proveedor dinámico
+        public decimal CostoImportacion { get; set; } // Importacion
+        public decimal Factor1 { get; set; } // Factor
+        public decimal Factor2 { get; set; } // Factor2
+        public decimal Factor3 { get; set; } // Factor3
+        public decimal Desperdicio { get; set; } // Desperdicio
+        // Factores de corte
+        public decimal FactorCorte1 { get; set; }
+        public decimal FactorCorte2 { get; set; }
+        public decimal FactorCorte3 { get; set; }
+        // Nuevo: Costo del proceso de corte
+        public decimal CostoProcesoCorte { get; set; }
+        public string? TipoTemplado { get; set; } // Tipo de templado para proceso térmico
     }
 }

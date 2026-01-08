@@ -38,6 +38,7 @@ partial class Form1
         BtnIns = new Button();
         BtnBorrar = new Button();
         panel1 = new Panel();
+        BtnDetalle = new Button();
         SuspendLayout();
         // 
         // BtnCristal
@@ -126,6 +127,15 @@ partial class Form1
         panel1.Size = new Size(408, 525);
         panel1.TabIndex = 2;
         // 
+        // BtnDetalle
+        // 
+        BtnDetalle.Location = new Point(1216, 483);
+        BtnDetalle.Name = "BtnDetalle";
+        BtnDetalle.Size = new Size(94, 29);
+        BtnDetalle.TabIndex = 0;
+        BtnDetalle.Text = "Detalle";
+        BtnDetalle.UseVisualStyleBackColor = true;
+        // 
         // Form1
         // 
         AutoScaleDimensions = new SizeF(8F, 20F);
@@ -136,6 +146,7 @@ partial class Form1
         Controls.Add(BtnSeparador);
         Controls.Add(BtnPelicula);
         Controls.Add(BtnBorrar);
+        Controls.Add(BtnDetalle);
         Controls.Add(BtnCalcular);
         Controls.Add(BtnIns);
         Controls.Add(BtnLam);
@@ -158,4 +169,5 @@ partial class Form1
     private Button BtnIns;
     private Button BtnBorrar;
     private Panel panel1;
+    private Button BtnDetalle;
 }

@@ -33,6 +33,7 @@ namespace CQuote.Calculadora.App
             BtnIns.Click += BtnIns_Click;
             BtnCalcular.Click += button4_Click;
             BtnBorrar.Click += BtnBorrar_Click;
+            BtnDetalle.Click += BtnDetalle_Click;
 
             // Evento de selección de nodo
             Trview1.AfterSelect += Trview1_AfterSelect;
@@ -221,15 +222,31 @@ namespace CQuote.Calculadora.App
         private ProductoResultado EjecutarCristal(CalculadoraPrecios calc, ConfigMaterial config)
         {
             return calc.CalcularCristal(
-                costoProveedor: config.CostoProveedor, // dinámico
-                costoImportacion: 20,
-                factor1: 0.95m, factor2: 0.90m, factor3: 1.02m,
-                merma: 1.01m, factorCorte: 1.0m, costoProcesoCorte: 15,
-                costoProcesoTermico: 10, costoImpresion: 5, costoCantos: 18,
-                costoBarrenos: 2, costoAvellanados: 3, costoResaques: 4,
-                desperdicio: 0.15m, cantidad: 2, margen: 0.25m,
-                areaTotal: 2.4m, perimetroTotal: 6.4m,
-                barrenosTotales: 2, avellanadosTotales: 1, resaquesTotales: 1);
+                costoProveedor: config.CostoProveedor,
+                costoImportacion: config.CostoImportacion, // dinámico
+                factor1: config.Factor1, // dinámico
+                factor2: config.Factor2, // dinámico
+                factor3: config.Factor3, // dinámico
+                merma: 1.01m, // fijo
+                factorCorte1: config.FactorCorte1, // nuevo
+                costoProcesoCorte: 15, // fijo
+                costoProcesoTermico: 10, // fijo
+                costoImpresion: 5, // fijo
+                costoCantos: 18, // fijo
+                costoBarrenos: 2, // fijo
+                costoAvellanados: 3, // fijo
+                costoResaques: 4, // fijo
+                desperdicio: config.Desperdicio, // dinámico
+                cantidad: 2, // fijo
+                margen: 0.25m, // fijo
+                areaTotal: 2.4m, // fijo
+                perimetroTotal: 6.4m, // fijo
+                barrenosTotales: 2, // fijo
+                avellanadosTotales: 1, // fijo
+                resaquesTotales: 1, // fijo
+                factorCorte2: config.FactorCorte2, // nuevo
+                factorCorte3: config.FactorCorte3  // nuevo
+            );
         }
 
         private ProductoResultado EjecutarPelicula(CalculadoraPrecios calc, ConfigMaterial config)
@@ -256,6 +273,30 @@ namespace CQuote.Calculadora.App
             if (Trview1.SelectedNode != null)
             {
                 Trview1.SelectedNode.Remove();
+            }
+        }
+
+        private void BtnDetalle_Click(object sender, EventArgs e)
+        {
+            var materiales = new List<(string Tipo, ConfigMaterial Material)>();
+            RecopilarMateriales(Trview1.Nodes, materiales);
+            var frm = new EdicionCostos();
+            frm.CargarMateriales(materiales);
+            frm.ShowDialog();
+        }
+
+        private void RecopilarMateriales(TreeNodeCollection nodes, List<(string Tipo, ConfigMaterial Material)> lista)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                if (node.Tag is ConfigMaterial mat)
+                {
+                    lista.Add((node.Name, mat));
+                }
+                if (node.Nodes.Count > 0)
+                {
+                    RecopilarMateriales(node.Nodes, lista);
+                }
             }
         }
     }
