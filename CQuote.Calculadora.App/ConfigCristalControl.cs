@@ -35,6 +35,8 @@ namespace CQuote.Calculadora.App
                             config.TipoTemplado = result != null && result != DBNull.Value ? result.ToString() : string.Empty;
                         }
                     }
+                    // Asignar factores y costo de corte por defecto al cargar
+                    ObtenerFactoresCorte("Recto");
                 }
                 else
                 {
@@ -88,7 +90,7 @@ namespace CQuote.Calculadora.App
                 conn.Open();
 
                 // 1. Buscar descripción en Materiales
-                string queryMateriales = "SELECT DESCRIPCION, TIPOTEMPLADO FROM Materiales WHERE Tipo='Cristal' AND Num=@Num";
+                string queryMateriales = "SELECT DESCRIPCION, TIPOTEMPLADO, ESPESOR FROM Materiales WHERE Tipo='Cristal' AND Num=@Num";
                 using (SqlCommand cmd = new SqlCommand(queryMateriales, conn))
                 {
                     cmd.Parameters.AddWithValue("@Num", numero);
@@ -98,12 +100,14 @@ namespace CQuote.Calculadora.App
                         {
                             string descripcion = reader["DESCRIPCION"].ToString();
                             string tipoTemplado = reader["TIPOTEMPLADO"].ToString();
+                            decimal espesor = reader["ESPESOR"] != DBNull.Value ? Convert.ToDecimal(reader["ESPESOR"]) : 0;
                             LblNombreCristal.Text = descripcion;
                             if (config != null)
                             {
                                 config.Num = numero;
                                 config.Descripcion = descripcion;
                                 config.TipoTemplado = tipoTemplado;
+                                config.Espesor = espesor;
                             }
                         }
                     }

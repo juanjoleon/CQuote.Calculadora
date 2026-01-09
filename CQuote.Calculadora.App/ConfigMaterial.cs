@@ -17,5 +17,6 @@
         // Nuevo: Costo del proceso de corte
         public decimal CostoProcesoCorte { get; set; }
         public string? TipoTemplado { get; set; } // Tipo de templado para proceso térmico
+        public decimal Espesor { get; set; } // Espesor del material
     }
 }

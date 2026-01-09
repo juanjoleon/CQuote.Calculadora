@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             DtvDetalle = new DataGridView();
+            label1 = new Label();
+            LblSubtotal = new Label();
+            LblLaminado = new Label();
             ((System.ComponentModel.ISupportInitialize)DtvDetalle).BeginInit();
             SuspendLayout();
             // 
@@ -38,23 +41,58 @@
             DtvDetalle.Location = new Point(31, 48);
             DtvDetalle.Name = "DtvDetalle";
             DtvDetalle.RowHeadersWidth = 51;
-            DtvDetalle.Size = new Size(1357, 224);
+            DtvDetalle.Size = new Size(1785, 266);
             DtvDetalle.TabIndex = 0;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(0, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(50, 20);
+            label1.TabIndex = 1;
+            label1.Text = "label1";
+            // 
+            // LblSubtotal
+            // 
+            LblSubtotal.AutoSize = true;
+            LblSubtotal.Location = new Point(1409, 340);
+            LblSubtotal.Name = "LblSubtotal";
+            LblSubtotal.Size = new Size(50, 20);
+            LblSubtotal.TabIndex = 2;
+            LblSubtotal.Text = "label2";
+            // 
+            // LblLaminado
+            // 
+            LblLaminado.AutoSize = true;
+            LblLaminado.Location = new Point(1286, 340);
+            LblLaminado.Name = "LblLaminado";
+            LblLaminado.Size = new Size(50, 20);
+            LblLaminado.TabIndex = 2;
+            LblLaminado.Text = "label2";
             // 
             // EdicionCostos
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1437, 886);
+            ClientSize = new Size(1828, 886);
+            Controls.Add(LblLaminado);
+            Controls.Add(LblSubtotal);
+            Controls.Add(label1);
             Controls.Add(DtvDetalle);
             Name = "EdicionCostos";
             Text = "EdicionCostos";
+            Load += EdicionCostos_Load;
             ((System.ComponentModel.ISupportInitialize)DtvDetalle).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         private DataGridView DtvDetalle;
+        private Label label1;
+        private Label LblSubtotal;
+        private Label LblLaminado;
     }
 }

@@ -310,7 +310,7 @@ namespace CQuote.Calculadora.App
 
         private void BtnDetalle_Click(object sender, EventArgs e)
         {
-            var materiales = new List<(string Tipo, ConfigMaterial Material)>();
+            var materiales = new List<(string Tipo, ConfigMaterial Material, string? Padre)>();
             RecopilarMateriales(Trview1.Nodes, materiales);
             string procesoTermico = ObtenerProcesoTermicoSeleccionado();
             var frm = new EdicionCostos();
@@ -342,17 +342,17 @@ namespace CQuote.Calculadora.App
             return "Recocido"; // Valor por defecto
         }
 
-        private void RecopilarMateriales(TreeNodeCollection nodes, List<(string Tipo, ConfigMaterial Material)> lista)
+        private void RecopilarMateriales(TreeNodeCollection nodes, List<(string Tipo, ConfigMaterial Material, string? Padre)> lista, string? padre = null)
         {
             foreach (TreeNode node in nodes)
             {
                 if (node.Tag is ConfigMaterial mat)
                 {
-                    lista.Add((node.Name, mat));
+                    lista.Add((node.Name, mat, padre));
                 }
                 if (node.Nodes.Count > 0)
                 {
-                    RecopilarMateriales(node.Nodes, lista);
+                    RecopilarMateriales(node.Nodes, lista, node.Name);
                 }
             }
         }
