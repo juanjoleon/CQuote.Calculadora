@@ -136,6 +136,8 @@ namespace CQuote.Calculadora.App
                                 config.Factor3 = Convert.ToDecimal(reader["Factor3"]);
                             if (reader["Desperdicio"] != DBNull.Value)
                                 config.Desperdicio = Convert.ToDecimal(reader["Desperdicio"]);
+                            if (reader["Moneda"] != DBNull.Value)
+                                config.Moneda = reader["Moneda"].ToString();
                         }
                     }
                 }

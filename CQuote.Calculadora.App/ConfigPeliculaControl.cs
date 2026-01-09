@@ -85,7 +85,7 @@ namespace CQuote.Calculadora.App
                         }
                     }
                 }
-                string queryCostos = @"SELECT TOP 1 Costo, Importacion, Factor, Factor2, Factor3, Desperdicio 
+                string queryCostos = @"SELECT TOP 1 Costo, Importacion, Factor, Factor2, Factor3, Moneda, Desperdicio 
                                        FROM Costos 
                                        WHERE Actual='True' AND Tipo='Pelicula' AND Mercado='NAL' AND Num=@Num";
                 using (SqlCommand cmd = new SqlCommand(queryCostos, conn))
@@ -107,6 +107,8 @@ namespace CQuote.Calculadora.App
                                 config.Factor3 = Convert.ToDecimal(reader["Factor3"]);
                             if (reader["Desperdicio"] != DBNull.Value)
                                 config.Desperdicio = Convert.ToDecimal(reader["Desperdicio"]);
+                            if (reader["Moneda"] != DBNull.Value)
+                                config.Moneda = reader["Moneda"].ToString();
                         }
                     }
                 }

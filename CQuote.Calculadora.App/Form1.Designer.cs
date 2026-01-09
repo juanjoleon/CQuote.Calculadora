@@ -39,6 +39,7 @@ partial class Form1
         BtnBorrar = new Button();
         panel1 = new Panel();
         BtnDetalle = new Button();
+        CBTipodeCambio = new ComboBox();
         SuspendLayout();
         // 
         // BtnCristal
@@ -56,6 +57,7 @@ partial class Form1
         Trview1.Name = "Trview1";
         Trview1.Size = new Size(304, 394);
         Trview1.TabIndex = 1;
+        Trview1.AfterSelect += Trview1_AfterSelect_1;
         // 
         // BtnPelicula
         // 
@@ -136,11 +138,22 @@ partial class Form1
         BtnDetalle.Text = "Detalle";
         BtnDetalle.UseVisualStyleBackColor = true;
         // 
+        // CBTipodeCambio
+        // 
+        CBTipodeCambio.DropDownStyle = ComboBoxStyle.DropDownList;
+        CBTipodeCambio.FormattingEnabled = true;
+        CBTipodeCambio.Items.AddRange(new object[] { "MXP", "USD" });
+        CBTipodeCambio.Location = new Point(20, 100);
+        CBTipodeCambio.Name = "CBTipodeCambio";
+        CBTipodeCambio.Size = new Size(100, 28);
+        CBTipodeCambio.TabIndex = 2;
+        // 
         // Form1
         // 
         AutoScaleDimensions = new SizeF(8F, 20F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(1554, 630);
+        Controls.Add(CBTipodeCambio);
         Controls.Add(panel1);
         Controls.Add(Trview1);
         Controls.Add(BtnSeparador);
@@ -170,4 +183,5 @@ partial class Form1
     private Button BtnBorrar;
     private Panel panel1;
     private Button BtnDetalle;
+    private ComboBox CBTipodeCambio;
 }

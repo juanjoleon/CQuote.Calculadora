@@ -165,6 +165,13 @@ namespace CQuote.Calculadora.App
         // --- Botón Calcular ---
         private void button4_Click(object sender, EventArgs e)
         {
+            // Validar que el combo de tipo de cambio tenga una opción válida
+            if (CBTipodeCambio.SelectedItem == null || (CBTipodeCambio.SelectedItem.ToString() != "MXP" && CBTipodeCambio.SelectedItem.ToString() != "USD"))
+            {
+                MessageBox.Show("Debe seleccionar la moneda de cotización (MXP o USD) antes de calcular.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             // Validar que todos los nodos de tipo Cristal, Pelicula y Separador tengan Num capturado y costo válido
             foreach (TreeNode root in Trview1.Nodes)
             {
@@ -313,8 +320,9 @@ namespace CQuote.Calculadora.App
             var materiales = new List<(string Tipo, ConfigMaterial Material, string? Padre)>();
             RecopilarMateriales(Trview1.Nodes, materiales);
             string procesoTermico = ObtenerProcesoTermicoSeleccionado();
+            string monedaCotizacion = CBTipodeCambio.SelectedItem?.ToString() ?? "";
             var frm = new EdicionCostos();
-            frm.CargarMateriales(materiales, procesoTermico);
+            frm.CargarMateriales(materiales, procesoTermico, monedaCotizacion);
             frm.ShowDialog();
         }
 
@@ -355,6 +363,11 @@ namespace CQuote.Calculadora.App
                     RecopilarMateriales(node.Nodes, lista, node.Name);
                 }
             }
+        }
+
+        private void Trview1_AfterSelect_1(object sender, TreeViewEventArgs e)
+        {
+
         }
     }
 }

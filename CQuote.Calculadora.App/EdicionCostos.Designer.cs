@@ -32,6 +32,7 @@
             label1 = new Label();
             LblSubtotal = new Label();
             LblLaminado = new Label();
+            LblSubtotalcm = new Label();
             ((System.ComponentModel.ISupportInitialize)DtvDetalle).BeginInit();
             SuspendLayout();
             // 
@@ -71,11 +72,21 @@
             LblLaminado.TabIndex = 2;
             LblLaminado.Text = "label2";
             // 
+            // LblSubtotalcm
+            // 
+            LblSubtotalcm.AutoSize = true;
+            LblSubtotalcm.Location = new Point(1409, 370);
+            LblSubtotalcm.Name = "LblSubtotalcm";
+            LblSubtotalcm.Size = new Size(120, 20);
+            LblSubtotalcm.TabIndex = 3;
+            LblSubtotalcm.Text = "Subtotal c/margen";
+            // 
             // EdicionCostos
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1828, 886);
+            Controls.Add(LblSubtotalcm);
             Controls.Add(LblLaminado);
             Controls.Add(LblSubtotal);
             Controls.Add(label1);
@@ -94,5 +105,6 @@
         private Label label1;
         private Label LblSubtotal;
         private Label LblLaminado;
+        private Label LblSubtotalcm;
     }
 }

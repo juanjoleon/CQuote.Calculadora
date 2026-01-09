@@ -15,7 +15,7 @@ namespace CQuote.Calculadora.App
             InitializeComponent();
         }
 
-        public void CargarMateriales(List<(string Tipo, ConfigMaterial Material, string? Padre)> materiales, string procesoTermico)
+        public void CargarMateriales(List<(string Tipo, ConfigMaterial Material, string? Padre)> materiales, string procesoTermico, string monedaCotizacion)
         {
             DtvDetalle.Columns.Clear();
             DtvDetalle.Rows.Clear();
@@ -23,6 +23,7 @@ namespace CQuote.Calculadora.App
             DtvDetalle.Columns.Add("Num", "Num");
             DtvDetalle.Columns.Add("Descripcion", "Descripción");
             DtvDetalle.Columns.Add("CostoProveedor", "Costo Proveedor");
+            DtvDetalle.Columns.Add("Moneda", "Moneda");
             DtvDetalle.Columns.Add("CostoImportacion", "Costo Importación");
             DtvDetalle.Columns.Add("Factor1", "Factor1");
             DtvDetalle.Columns.Add("Calculo1", "Cálculo1");
@@ -37,11 +38,13 @@ namespace CQuote.Calculadora.App
             DtvDetalle.Columns.Add("NombreProcesoTermico", "Nombre Proceso Térmico");
             DtvDetalle.Columns.Add("CostoProcesoTermico", "Costo Proceso Térmico");
             DtvDetalle.Columns.Add("Total", "Total con Proceso Térmico");
+            DtvDetalle.Columns.Add("CostoConvertido", "Costo Convertido");
             DtvDetalle.Columns.Add("TipoTemplado", "TIPOTEMPLADO");
             DtvDetalle.Columns.Add("Espesor", "Espesor");
 
             decimal sumaTotal = 0;
             decimal sumaEspesorLaminados = 0;
+            decimal sumaTotalConvertido = 0;
             foreach (var (tipo, mat, padre) in materiales)
             {
                 decimal calculo1 = 0, calculo2 = 0, calculo3 = 0, costoLamina = 0, costoConDesperdicio = 0, costoCorte = 0, costoProcesoTermico = 0, total = 0;
@@ -84,11 +87,42 @@ namespace CQuote.Calculadora.App
                 {
                     sumaEspesorLaminados += mat.Espesor;
                 }
+                // Conversión de moneda
+                decimal costoConvertido = total;
+                string monedaSupplier = mat.Moneda ?? "MXP";
+                if (monedaSupplier != monedaCotizacion)
+                {
+                    decimal tipoCambio = 1;
+                    try
+                    {
+                        string connectionString = "Server=lapjjlg\\SQLEXPRESS;Database=CQuote;Trusted_Connection=True;";
+                        using (var conn = new System.Data.SqlClient.SqlConnection(connectionString))
+                        {
+                            conn.Open();
+                            string query = "SELECT Valor2 FROM Generales WHERE Concepto = N'Tipo de cambio' AND Valor = @Valor";
+                            string valorCambio = monedaSupplier == "MXP" && monedaCotizacion == "USD" ? "MXP USD" : "USD MXP";
+                            using (var cmd = new System.Data.SqlClient.SqlCommand(query, conn))
+                            {
+                                cmd.Parameters.AddWithValue("@Valor", valorCambio);
+                                var result = cmd.ExecuteScalar();
+                                if (result != null && result != DBNull.Value)
+                                    tipoCambio = Convert.ToDecimal(result);
+                            }
+                        }
+                    }
+                    catch { tipoCambio = 1; }
+                    if (monedaSupplier == "MXP" && monedaCotizacion == "USD")
+                        costoConvertido = total / tipoCambio;
+                    else if (monedaSupplier == "USD" && monedaCotizacion == "MXP")
+                        costoConvertido = total * tipoCambio;
+                }
+                sumaTotalConvertido += costoConvertido;
                 DtvDetalle.Rows.Add(
                     tipo,
                     mat.Num,
                     mat.Descripcion,
                     mat.CostoProveedor,
+                    monedaSupplier,      // Moneda
                     mat.CostoImportacion,
                     mat.Factor1,
                     calculo1.ToString("C2"),
@@ -103,16 +137,13 @@ namespace CQuote.Calculadora.App
                     tipo == "Cristal" ? procesoTermico : string.Empty,
                     costoProcesoTermico,
                     total,
+                    costoConvertido,      // Costo Convertido
                     mat.TipoTemplado ?? string.Empty,
-                    mat.Espesor
+                    mat.Espesor           // Espesor
                 );
             }
             // Mostrar la suma en el label
-            if (LblSubtotal != null)
-                LblSubtotal.Text = $"Subtotal: {sumaTotal:C2}";
-
-            // Consulta para laminado
-            decimal energia = 0, mantenimiento = 0;
+            decimal energia = 0, mantenimiento = 0, totalLaminado = 0;
             string moneda = "";
             try
             {
@@ -149,9 +180,42 @@ namespace CQuote.Calculadora.App
                 }
             }
             catch { }
-            decimal totalLaminado = sumaEspesorLaminados * (energia + mantenimiento) * 2.5m;
+            totalLaminado = sumaEspesorLaminados * (energia + mantenimiento) * 2.5m;
+            // Convertir laminado si es necesario
+            decimal totalLaminadoConvertido = totalLaminado;
+            if (!string.IsNullOrEmpty(moneda) && moneda != monedaCotizacion)
+            {
+                decimal tipoCambio = 1;
+                try
+                {
+                    string connectionString = "Server=lapjjlg\\SQLEXPRESS;Database=CQuote;Trusted_Connection=True;";
+                    using (var conn = new System.Data.SqlClient.SqlConnection(connectionString))
+                    {
+                        conn.Open();
+                        string query = "SELECT Valor2 FROM Generales WHERE Concepto = N'Tipo de cambio' AND Valor = @Valor";
+                        string valorCambio = moneda == "MXP" && monedaCotizacion == "USD" ? "MXP USD" : "USD MXP";
+                        using (var cmd = new System.Data.SqlClient.SqlCommand(query, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@Valor", valorCambio);
+                            var result = cmd.ExecuteScalar();
+                            if (result != null && result != DBNull.Value)
+                                tipoCambio = Convert.ToDecimal(result);
+                        }
+                    }
+                }
+                catch { tipoCambio = 1; }
+                if (moneda == "MXP" && monedaCotizacion == "USD")
+                    totalLaminadoConvertido = totalLaminado / tipoCambio;
+                else if (moneda == "USD" && monedaCotizacion == "MXP")
+                    totalLaminadoConvertido = totalLaminado * tipoCambio;
+            }
+            decimal totalFinal = sumaTotalConvertido + totalLaminadoConvertido;
+            if (LblSubtotal != null)
+                LblSubtotal.Text = $"Subtotal: {totalFinal:C2} {monedaCotizacion}";
+            if (LblSubtotalcm != null)
+                LblSubtotalcm.Text = $"Subtotal c/margen: {(totalFinal / 0.95m):C2} {monedaCotizacion}";
             if (LblLaminado != null)
-                LblLaminado.Text = $"Laminado: {totalLaminado:C2} {moneda}";
+                LblLaminado.Text = $"Laminado: {totalLaminadoConvertido:C2} {monedaCotizacion}";
         }
 
         private decimal ObtenerCostoProcesoTermicoBD(string procesoTermico, string? tipoTemplado)
