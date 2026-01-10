@@ -19,5 +19,8 @@
         public string? TipoTemplado { get; set; } // Tipo de templado para proceso térmico
         public decimal Espesor { get; set; } // Espesor del material
         public string? Moneda { get; set; } // Moneda del costo proveedor
+        public string? TipoCanto { get; set; } // Tipo de canto para cristal
+        public decimal PerimetroTotal { get; set; } // Perímetro total (ml)
+        public decimal AreaTotal { get; set; } // Área total (m2)
     }
 }

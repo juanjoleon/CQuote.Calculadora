@@ -151,14 +151,27 @@ namespace CQuote.Calculadora.App
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
         {
+            if (config == null) return;
             if (Rbfactorcorte1.Checked)
+            {
                 ObtenerFactoresCorte("Recto");
+                config.TipoCanto = "Filos Muertos";
+            }
             else if (Rbfactorcorte2.Checked)
+            {
                 ObtenerFactoresCorte("En forma");
+                config.TipoCanto = "CPB";
+            }
             else if (Rbfactorcorte3.Checked)
+            {
                 ObtenerFactoresCorte("Maquila");
+                config.TipoCanto = "Filos Muertos";
+            }
             else if (Rbfactorcorte4.Checked)
+            {
                 ObtenerFactoresCorte("Lámina");
+                config.TipoCanto = "Filos Muertos";
+            }
         }
 
         private void ObtenerFactoresCorte(string tipoCorte)

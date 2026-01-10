@@ -33,7 +33,9 @@
             LblSubtotal = new Label();
             LblLaminado = new Label();
             LblSubtotalcm = new Label();
+            dgvTrabajos = new DataGridView();
             ((System.ComponentModel.ISupportInitialize)DtvDetalle).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvTrabajos).BeginInit();
             SuspendLayout();
             // 
             // DtvDetalle
@@ -75,17 +77,28 @@
             // LblSubtotalcm
             // 
             LblSubtotalcm.AutoSize = true;
-            LblSubtotalcm.Location = new Point(1409, 370);
+            LblSubtotalcm.Location = new Point(1409, 369);
             LblSubtotalcm.Name = "LblSubtotalcm";
-            LblSubtotalcm.Size = new Size(120, 20);
+            LblSubtotalcm.Size = new Size(133, 20);
             LblSubtotalcm.TabIndex = 3;
             LblSubtotalcm.Text = "Subtotal c/margen";
+            LblSubtotalcm.Click += LblSubtotalcm_Click;
+            // 
+            // dgvTrabajos
+            // 
+            dgvTrabajos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvTrabajos.Location = new Point(31, 403);
+            dgvTrabajos.Name = "dgvTrabajos";
+            dgvTrabajos.RowHeadersWidth = 51;
+            dgvTrabajos.Size = new Size(1785, 188);
+            dgvTrabajos.TabIndex = 4;
             // 
             // EdicionCostos
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1828, 886);
+            Controls.Add(dgvTrabajos);
             Controls.Add(LblSubtotalcm);
             Controls.Add(LblLaminado);
             Controls.Add(LblSubtotal);
@@ -95,6 +108,7 @@
             Text = "EdicionCostos";
             Load += EdicionCostos_Load;
             ((System.ComponentModel.ISupportInitialize)DtvDetalle).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvTrabajos).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -106,5 +120,6 @@
         private Label LblSubtotal;
         private Label LblLaminado;
         private Label LblSubtotalcm;
+        private DataGridView dgvTrabajos;
     }
 }

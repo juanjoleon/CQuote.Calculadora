@@ -20,7 +20,6 @@
             TxtCristalNum = new TextBox();
             LblNombreCristal = new Label();
             comboBox1 = new ComboBox();
-            label1 = new Label();
             Rbfactorcorte1 = new RadioButton();
             Rbfactorcorte2 = new RadioButton();
             Rbfactorcorte3 = new RadioButton();
@@ -29,12 +28,15 @@
             RbCurvoTemplado = new RadioButton();
             RbSemitemplado = new RadioButton();
             RbRecocido = new RadioButton();
-            label2 = new Label();
             RbTemplado = new RadioButton();
             groupBox1 = new GroupBox();
             groupBox2 = new GroupBox();
+            groupBox3 = new GroupBox();
+            RButtonFilosMuertos = new RadioButton();
+            RbCPB = new RadioButton();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
+            groupBox3.SuspendLayout();
             SuspendLayout();
             // 
             // TxtCristalNum
@@ -57,19 +59,10 @@
             // comboBox1
             // 
             comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(148, 425);
+            comboBox1.Location = new Point(175, 461);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(151, 28);
             comboBox1.TabIndex = 2;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(20, 95);
-            label1.Name = "label1";
-            label1.Size = new Size(77, 20);
-            label1.TabIndex = 1;
-            label1.Text = "Tipo corte";
             // 
             // Rbfactorcorte1
             // 
@@ -163,15 +156,6 @@
             RbRecocido.Text = "Recocido";
             RbRecocido.UseVisualStyleBackColor = true;
             // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(20, 235);
-            label2.Name = "label2";
-            label2.Size = new Size(116, 20);
-            label2.TabIndex = 6;
-            label2.Text = "Proceso térmico";
-            // 
             // RbTemplado
             // 
             RbTemplado.AutoSize = true;
@@ -189,12 +173,12 @@
             groupBox1.Controls.Add(Rbfactorcorte2);
             groupBox1.Controls.Add(Rbfactorcorte3);
             groupBox1.Controls.Add(Rbfactorcorte4);
-            groupBox1.Location = new Point(40, 132);
+            groupBox1.Location = new Point(36, 111);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(408, 77);
             groupBox1.TabIndex = 11;
             groupBox1.TabStop = false;
-            groupBox1.Text = "groupBox1";
+            groupBox1.Text = "Tipo de corte";
             // 
             // groupBox2
             // 
@@ -203,35 +187,70 @@
             groupBox2.Controls.Add(RbCurvoRecocido);
             groupBox2.Controls.Add(RbSemitemplado);
             groupBox2.Controls.Add(RbCurvoTemplado);
-            groupBox2.Location = new Point(40, 272);
+            groupBox2.Location = new Point(36, 325);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(414, 109);
             groupBox2.TabIndex = 12;
             groupBox2.TabStop = false;
-            groupBox2.Text = "groupBox2";
+            groupBox2.Text = "Proceso Térmico";
+            // 
+            // groupBox3
+            // 
+            groupBox3.Controls.Add(RButtonFilosMuertos);
+            groupBox3.Controls.Add(RbCPB);
+            groupBox3.Location = new Point(36, 215);
+            groupBox3.Name = "groupBox3";
+            groupBox3.Size = new Size(408, 77);
+            groupBox3.TabIndex = 11;
+            groupBox3.TabStop = false;
+            groupBox3.Text = "Tipo de canto";
+            // 
+            // RButtonFilosMuertos
+            // 
+            RButtonFilosMuertos.AutoSize = true;
+            RButtonFilosMuertos.Location = new Point(25, 35);
+            RButtonFilosMuertos.Name = "RButtonFilosMuertos";
+            RButtonFilosMuertos.Size = new Size(118, 24);
+            RButtonFilosMuertos.TabIndex = 5;
+            RButtonFilosMuertos.TabStop = true;
+            RButtonFilosMuertos.Text = "Filos Muertos";
+            RButtonFilosMuertos.UseVisualStyleBackColor = true;
+            RButtonFilosMuertos.CheckedChanged += radioButton3_CheckedChanged;
+            // 
+            // RbCPB
+            // 
+            RbCPB.AutoSize = true;
+            RbCPB.Location = new Point(144, 35);
+            RbCPB.Name = "RbCPB";
+            RbCPB.Size = new Size(56, 24);
+            RbCPB.TabIndex = 5;
+            RbCPB.TabStop = true;
+            RbCPB.Text = "CPB";
+            RbCPB.UseVisualStyleBackColor = true;
+            RbCPB.CheckedChanged += radioButton3_CheckedChanged;
             // 
             // ConfigCristalControl
             // 
             Controls.Add(groupBox2);
+            Controls.Add(groupBox3);
             Controls.Add(groupBox1);
-            Controls.Add(label2);
             Controls.Add(comboBox1);
             Controls.Add(TxtCristalNum);
-            Controls.Add(label1);
             Controls.Add(LblNombreCristal);
             Name = "ConfigCristalControl";
-            Size = new Size(511, 478);
+            Size = new Size(479, 510);
             Load += ConfigCristalControl_Load;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
+            groupBox3.ResumeLayout(false);
+            groupBox3.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
 
         private ComboBox comboBox1;
-        private Label label1;
         private RadioButton Rbfactorcorte1;
         private RadioButton Rbfactorcorte2;
         private RadioButton Rbfactorcorte3;
@@ -240,9 +259,11 @@
         private RadioButton RbCurvoTemplado;
         private RadioButton RbSemitemplado;
         private RadioButton RbRecocido;
-        private Label label2;
         private RadioButton RbTemplado;
         private GroupBox groupBox1;
         private GroupBox groupBox2;
+        private GroupBox groupBox3;
+        private RadioButton RButtonFilosMuertos;
+        private RadioButton RbCPB;
     }
 }

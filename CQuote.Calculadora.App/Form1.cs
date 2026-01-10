@@ -323,6 +323,7 @@ namespace CQuote.Calculadora.App
             string monedaCotizacion = CBTipodeCambio.SelectedItem?.ToString() ?? "";
             var frm = new EdicionCostos();
             frm.CargarMateriales(materiales, procesoTermico, monedaCotizacion);
+            frm.LlenarDgvTrabajos(materiales); // Llenar el grid de trabajos
             frm.ShowDialog();
         }
 

@@ -56,7 +56,9 @@ namespace CQuote.Calculadora.App
                     costoLamina = calculo3 * 1.01m; // merma fija
                     costoConDesperdicio = (1 - mat.Desperdicio * mat.FactorCorte2) != 0 ? (calculo3 * 1.01m) / (1 - mat.Desperdicio * mat.FactorCorte2) * mat.FactorCorte1 : 0;
                     costoCorte = mat.CostoProcesoCorte * mat.FactorCorte3;
-                    costoProcesoTermico = ObtenerCostoProcesoTermicoBD(procesoTermico, mat.TipoTemplado);
+                    // Para cristales, usa la configuración específica del nodo
+                    string procesoTermicoCristal = mat.TipoTemplado ?? string.Empty;
+                    costoProcesoTermico = ObtenerCostoProcesoTermicoBD(procesoTermicoCristal, mat.TipoTemplado);
                     total = costoConDesperdicio + costoCorte + costoProcesoTermico;
                 }
                 else if (tipo == "Pelicula")
@@ -218,6 +220,69 @@ namespace CQuote.Calculadora.App
                 LblLaminado.Text = $"Laminado: {totalLaminadoConvertido:C2} {monedaCotizacion}";
         }
 
+        public void LlenarDgvTrabajos(List<(string Tipo, ConfigMaterial Material, string? Padre)> materiales)
+        {
+            dgvTrabajos.Columns.Clear();
+            dgvTrabajos.Rows.Clear();
+            dgvTrabajos.Columns.Add("Num", "Num");
+            dgvTrabajos.Columns.Add("Nombre", "Nombre");
+            dgvTrabajos.Columns.Add("TipoCanto", "Tipo de canto");
+            dgvTrabajos.Columns.Add("CostoML", "Costo canto por ml");
+            dgvTrabajos.Columns.Add("CostoM2", "Costo canto por m2");
+
+            foreach (var (tipo, mat, padre) in materiales)
+            {
+                if (tipo != "Cristal") continue;
+                // Determinar tipo de canto (asume propiedad mat.TipoCanto, si no existe, usar mat.TipoTemplado o similar)
+                string tipoCanto = !string.IsNullOrEmpty(mat.TipoCanto) ? mat.TipoCanto : "Filos Muertos";
+                decimal espesor = mat.Espesor;
+                decimal costoEnergia = 0, costoMantenimiento = 0;
+                string moneda = "";
+                string connectionString = "Server=lapjjlg\\SQLEXPRESS;Database=CQuote;Trusted_Connection=True;";
+                using (var conn = new System.Data.SqlClient.SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    // Energia
+                    string queryEnergia = "SELECT Valor2, Moneda FROM Generales WHERE Concepto = N'Cantos' AND Valor = @TipoCanto AND CAST(Valor4 AS decimal(10,2)) = @Espesor AND Valor1 = N'Energia'";
+                    using (var cmd = new System.Data.SqlClient.SqlCommand(queryEnergia, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@TipoCanto", tipoCanto);
+                        cmd.Parameters.AddWithValue("@Espesor", espesor);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                if (reader["Valor2"] != DBNull.Value)
+                                    costoEnergia = Convert.ToDecimal(reader["Valor2"]);
+                                if (reader["Moneda"] != DBNull.Value)
+                                    moneda = reader["Moneda"].ToString();
+                            }
+                        }
+                    }
+                    // Mantenimiento
+                    string queryMantenimiento = "SELECT Valor2 FROM Generales WHERE Concepto = N'Cantos' AND Valor = @TipoCanto AND CAST(Valor4 AS decimal(10,2)) = @Espesor AND Valor1 = N'Mantenimiento'";
+                    using (var cmd = new System.Data.SqlClient.SqlCommand(queryMantenimiento, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@TipoCanto", tipoCanto);
+                        cmd.Parameters.AddWithValue("@Espesor", espesor);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                if (reader["Valor2"] != DBNull.Value)
+                                    costoMantenimiento = Convert.ToDecimal(reader["Valor2"]);
+                            }
+                        }
+                    }
+                }
+                decimal costoML = costoEnergia + costoMantenimiento;
+                decimal ml = 6.4m; // Perímetro total fijo
+                decimal area = 2.4m; // Área total fija
+                decimal costoM2 = (costoML * ml) / area;
+                dgvTrabajos.Rows.Add(mat.Num, mat.Descripcion, tipoCanto, costoML, costoM2.ToString("C2"));
+            }
+        }
+
         private decimal ObtenerCostoProcesoTermicoBD(string procesoTermico, string? tipoTemplado)
         {
             if (string.IsNullOrWhiteSpace(tipoTemplado))
@@ -255,6 +320,11 @@ namespace CQuote.Calculadora.App
         }
 
         private void EdicionCostos_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LblSubtotalcm_Click(object sender, EventArgs e)
         {
 
         }
